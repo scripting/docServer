@@ -1,0 +1,130 @@
+
+body {
+	font-family: "Ubuntu";
+	font-size: 16px;
+	background-color: whitesmoke;
+	}
+.divPageBody {
+	margin-top: 80px;
+	width: 70%;
+	margin-left: auto;
+	margin-right: auto;
+	}
+.divVersionNumber {
+	font-size: 12px;
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: gray;
+	padding-top: 17px;
+	padding-right: 17px;
+	}
+
+.divIndexPanel {
+	display: table-cell;
+	width: 150px;
+	margin-right: 5px;
+	border: 1px solid silver;
+	padding: 3px;
+	}
+.divSpacer {
+	display: table-cell;
+	width: 10px;
+	}
+.divDocserverPanel {
+	display: table-cell;
+	width: 700px;
+	vertical-align: top;
+	margin-left: 10px;
+	border: 1px solid silver;
+	padding: 7px;
+	}
+.divDocserverPage {
+	}
+	
+
+.ulVerbList {
+	margin: 0;
+	}
+.ulVerbList li {
+	list-style-type: none;
+	font-size: 14px;
+	cursor: pointer;
+	padding: 2px;
+	}
+.ulVerbList .liCursor {
+	background-color: #086DD6;
+	color: white;
+	}
+
+
+
+
+.divDocserverNavLinks {
+	font-size: 14px;
+	margin-bottom: 30px;
+	}
+.divNavleft {
+	cursor: pointer;
+	}
+.divNavright {
+	float: right;
+	cursor: pointer;
+	}
+.navicon {
+	color: green;
+	width: 14px;
+	heigth: 14px;
+	}
+.dsTitle {
+	font-size: 36px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	letter-spacing: -1px;
+	}
+.dsOrangeLine, .dsBlackLine {
+	width: 100%;
+	height: 3px;
+	opacity: 0.9;
+	background-color: orange;
+	margin-top: 15px;
+	margin-bottom: 10px;
+	}
+.dsOrangeLine {
+	margin-top: 25px;
+	margin-bottom: 25px;
+	}
+.dsBlackLine {
+	background-color: gray;
+	height: 1px;
+	margin-top: 1px;
+	}
+.dsSection {
+	display: table-row;
+	}
+.dsSectionTitle {
+	display: table-cell;
+	text-align: right;
+	font-weight: bold;
+	margin-top: 10px;
+	padding-right: 1em;
+	white-space: nowrap;
+	}
+.dsSectionText {
+	display: table-cell;
+	}
+.dsSectionPgf li {
+	list-style-type: none;
+	margin-top: -1px;
+	}
+
+.divOutlineJson {
+	display: none;
+	}
+.divConsts {
+	display: none;
+	}
+.divPrefs {
+	display: none;
+	}
+

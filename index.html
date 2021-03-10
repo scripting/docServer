@@ -1,0 +1,90 @@
+<html>
+	<head>
+		<title>DocServer</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		
+		<script src="//s3.amazonaws.com/scripting.com/code/includes/jquery-1.9.1.min.js"></script>
+<link href="//s3.amazonaws.com/scripting.com/code/includes/bootstrap.css" rel="stylesheet">
+<script src="//s3.amazonaws.com/scripting.com/code/includes/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="//s3.amazonaws.com/scripting.com/code/fontawesome/css/all.css">
+<link href="//fonts.googleapis.com/css?family=Ubuntu:400,500i,700" rel="stylesheet">
+<link href="//fonts.googleapis.com/css?family=Rancho" rel="stylesheet">
+
+<script src="//s3.amazonaws.com/scripting.com/code/includes/basic/code.js"></script>
+<link href="//s3.amazonaws.com/scripting.com/code/includes/basic/styles.css" rel="stylesheet" type="text/css">
+
+		
+		<script src="http://fargo.io/code/keypress.js" /></script>
+		<script src="http://scripting.com/code/concord/testing/3.0.6/concord.js"></script>
+		<link rel="stylesheet" href="http://scripting.com/code/concord/concordstyles.css"/>
+		<script src="http://fargo.io/code/concordKeyboard.js" /></script>
+		<script src="http://fargo.io/code/shared/outliner.js"></script>
+		<script src="http://fargo.io/code/shared/xml.js"></script>
+		
+		<script src="http://fargo.io/code/storage/api.js"></script>
+		<script src="http://scripting.com/code/feedbase/api.js"></script>
+		
+		<script src="code.js"></script>
+		<link rel="stylesheet" href="styles.css"/>
+		
+		</head>
+	<body>
+		<div class="divMenubar" id="idMenubar">
+			<div class="topbar-wrapper" style="z-index: 5;">
+				<div class="navbar navbar-fixed-top" data-dropdown="dropdown">
+					<div class="divVersionNumber" id="idVersionNumber">
+						</div>
+					<div class="navbar-inner">
+						<div class="container">
+							<a class="brand" onclick="clickHome ()"><span id="idMenuProductName">DocServer</span></a>
+							<ul class="nav" id="idMainMenuList">
+								<li class="dropdown" id="idMainMenu"> 
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu&nbsp;<b class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li><a onclick="shareCommand ()">Share this page...</a></li>
+										</ul>
+									</li>
+								</ul>
+							<ul class="nav pull-right">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span id="idTwitterIcon"></span><span id="idTwitterUsername"></span>&nbsp;<b class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li><a onclick="aboutDialog ();">About <span id="idMenuAboutProductName"></span>...</a></li>
+										<li class="divider"></li>
+										<li><a onclick="showPrefsDialog ();">Settings...</a></li>
+										<li class="divider"></li>
+										<li><a onclick="twToggleConnectCommand ();" id="idTwitterConnectMenuItem"></a></li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<div class="divPageBody" id="idPageBody">
+			<div class="divIndexPanel" id="idIndexPanel">
+				</div>
+			<div class="divSpacer">
+				</div>
+			<div class="divDocserverPanel" id="idDocserverPanel">
+				</div>
+			</div>
+		<pre class="divOutlineJson" id="idOutlineJson">
+			[%outlineJson%]
+			</pre>
+		<pre class="divConsts" id="idConsts">
+			</pre>
+		<pre class="divPrefs" id="idPrefs">
+			</pre>
+		<script>
+			$(document).ready (function () {
+				
+				startup ();
+				});
+			</script>
+		</body>
+	</html>
