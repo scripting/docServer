@@ -57,9 +57,6 @@ body {
 	color: white;
 	}
 
-
-
-
 .divDocserverNavLinks {
 	font-size: 14px;
 	margin-bottom: 30px;
@@ -113,9 +110,16 @@ body {
 .dsSectionText {
 	display: table-cell;
 	}
+.dsSectionText ul {
+	margin-left: 15px;
+	}
 .dsSectionPgf li {
 	list-style-type: none;
-	margin-top: -1px;
+	margin-top: 5px;
+	}
+.isComment {
+	font-style: italic;
+	font-size: 0.9em;
 	}
 
 .divOutlineJson {

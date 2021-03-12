@@ -1,4 +1,4 @@
-var myVersion = "0.4.0", myProductName = "DocServer";
+var myVersion = "0.4.1", myProductName = "DocServer";
 
 const urlDocsOpml = "http://docs.littleoutliner.com/davewiner/verbDocs.opml?format=opml";
 var docserverOpmltext = undefined;
@@ -196,8 +196,21 @@ function viewDocserverPage (verb) {
 		var theSection = $("<div class=\"dsSection\"></div>");
 		$(theSection).append ("<div class=\"dsSectionTitle\">" + item.text + "</div>");
 		var sectionText = $("<div class=\"dsSectionText\"></div>");
+		function appendPgfHierarchy (pgf, appendTo, fltoplevel) {
+			var isComment = (pgf.isComment) ? " isComment " : "";
+			var myClass = " class=\"dsSectionPgf" + isComment + "\" ";
+			var thisPgf = (fltoplevel) ? $("<p" + myClass + ">" + pgf.text + "</p>") : $("<li" + myClass + ">" + pgf.text + "</li>");
+			$(appendTo).append (thisPgf);
+			if (pgf.subs !== undefined) {
+				var ul = $("<ul></ul>");
+				$(thisPgf).append (ul);
+				pgf.subs.forEach (function (item) {
+					appendPgfHierarchy (item, ul, false);
+					});
+				}
+			}
 		item.subs.forEach (function (item) {
-			$(sectionText).append ("<p class=\"dsSectionPgf\">" + item.text + "</p>");
+			appendPgfHierarchy (item, sectionText, true);
 			});
 		$(theSection).append (sectionText);
 		$(docserverBody).append (theSection);
