@@ -1,4 +1,4 @@
-var myVersion = "0.4.1", myProductName = "DocServer";
+var myVersion = "0.4.2", myProductName = "DocServer";
 
 const urlDocsOpml = "http://docs.littleoutliner.com/davewiner/verbDocs.opml?format=opml";
 var docserverOpmltext = undefined;
@@ -8,9 +8,67 @@ var socketForChanges = undefined;
 var verbArray = undefined;
 
 var appPrefs = {
-	ixcursor: 0 //index into the verb array
+	lastVerbViewed: "file.exists",
+	ixcursor: 0, //index into the verb array
+	catcursor: 0 //index into categories -- docserverOutline.subs
 	}
 var flPrefsChanged = false;
+
+
+function xmlReadFile (url) { //a synchronous file read
+	var urlReadFileApi = "http://httpproxy.scripting.com/httpReadUrl"; 
+	return ($.ajax ({ 
+		url: urlReadFileApi + "?url=" + encodeURIComponent (url) + "&type=" + encodeURIComponent ("text/plain"),
+		headers: {"Accept": "text/x-opml"},
+		async: false,
+		dataType: "text" , 
+		timeout: 30000 
+		}).responseText);
+	}
+
+function xmlExpandIncludes (adrx, callback) {
+	xmlExpandInclude (adrx); 
+	if (xmlHasSubs (adrx)) {
+		$(adrx).children ("outline").each (function () {
+			xmlExpandIncludes (this);
+			});
+		}
+	if (callback !== undefined) {
+		callback ();
+		}
+	}
+function findInVerbArray (verbName) {
+	verbName = stringLower (verbName); //unicase search
+	for (var i = 0; i < verbArray.length; i++) {
+		var theVerb = verbArray [i];
+		if (stringLower (theVerb.title) == verbName) {
+			return (theVerb);
+			}
+		}
+	return (undefined);
+	}
+function buildVerbsMenu (theOutline, idMenuToInsertAfter) {
+	var theMenu = $("#idVerbsMenuList");
+	theMenu.empty ();
+	theOutline.subs.forEach (function (item, ix) {
+		var liSubMenuItem = $("<li class=\"dropdown-submenu\"><a href=\"#\">" + item.text + "</a></li>");
+		var ulSubMenu = $("<ul class=\"dropdown-menu\"></ul>");
+		liSubMenuItem.append (ulSubMenu);
+		theMenu.append (liSubMenuItem);
+		item.subs.forEach (function (item, ix) {
+			var liMenuItem = $("<li></li>");
+			var menuItemNameLink = $("<a></a>");
+			menuItemNameLink.html (item.text);
+			menuItemNameLink.click (function (event) { 
+				event.preventDefault ();
+				console.log ("You chose this verb from the menu: " + item.text);
+				viewDocserverPage (findInVerbArray (item.text)); //xxx
+				});
+			liMenuItem.append (menuItemNameLink);
+			ulSubMenu.append (liMenuItem);
+			});
+		});
+	}
 
 function prefsChanged () {
 	flPrefsChanged = true;
@@ -83,18 +141,27 @@ function wsWatchForChange () { //requests notification of changes to docserver o
 			};
 		}
 	}
+function findFirstVerbInCategory (theCategory) {
+	var catname = stringNthField (theCategory, " ", 1);
+	for (var i = 0; i < verbArray.length; i++) {
+		var item = verbArray [i];
+		if (beginsWith (item.title, catname)) {
+			return (item);
+			}
+		}
+	return (undefined);
+	}
 function viewIndexOutline () {
 	var theIndex = $("<div class=\"divVerbIndex\"></div>");
 	var theList = $("<ul class=\"ulVerbList\"></ul>");
-	verbArray.forEach (function (verb, ix) {
-		var theClass = (ix == appPrefs.ixcursor) ? " class=\"liCursor\" " : "";
-		var theItem = $("<li" + theClass + ">" + verb.title + "</li>");
+	docserverOutline.subs.forEach (function (cat, ix) {
+		var theClass = (ix == appPrefs.catcursor) ? " class=\"liCursor\" " : "";
+		var theItem = $("<li" + theClass + ">" + cat.text + "</li>");
 		$(theItem).click (function () {
-			var verb = verbArray [ix];
+			var verb = findFirstVerbInCategory (cat.text);
 			console.log (verb.path);
 			viewDocserverPage (verb);
-			appPrefs.ixcursor = ix;
-			prefsChanged ();
+			appPrefs.catcursor = ix;
 			viewIndexOutline ();
 			});
 		$(theList).append (theItem);
@@ -107,7 +174,8 @@ function moveCursorTo (ixInArray) {
 	appPrefs.ixcursor = ixInArray;
 	prefsChanged ();
 	viewIndexOutline ();
-	viewDocserverPage (verbArray [ixInArray]);
+	var cat = docserverOutline.subs [ixInArray];
+	viewDocserverPage (findFirstVerbInCategory (cat.text));
 	}
 function moveCursorUp () {
 	if (appPrefs.ixcursor <= 0) {
@@ -118,7 +186,7 @@ function moveCursorUp () {
 		}
 	}
 function moveCursorDown () {
-	if (appPrefs.ixcursor >= verbArray.length - 1) {
+	if (appPrefs.ixcursor >= docserverOutline.subs.length - 1) {
 		speakerBeep ();
 		}
 	else {
@@ -219,6 +287,9 @@ function viewDocserverPage (verb) {
 	$(theDocserverPage).append (docserverBody);
 	$("#idDocserverPanel").empty ();
 	$("#idDocserverPanel").append (theDocserverPage);
+	
+	appPrefs.lastVerbViewed = verb.path;
+	prefsChanged ();
 	}
 function viewPageViaPath (path) {
 	findPageInOutline (docserverOutline, path, function (err, verb) {
@@ -268,23 +339,25 @@ function rebootDocserver (opmltext, pathparam) {
 	docserverOpmltext = opmltext; //set global
 	var xstruct = xmlCompile (opmltext);
 	var adrbody = getXstuctBody (xstruct);
-	var theOutline = outlineToJson (adrbody);
-	docserverOutline = theOutline; //set global
-	
-	var adrhead = getXstuctHead (xstruct);
-	urlUpdateSocket = xmlGetValue (adrhead, "urlUpdateSocket"); //set global
-	
-	verbArray = getVerbArray (); //set global
-	
-	if (pathparam !== undefined) {
-		viewPageViaPath (pathparam);
-		}
-	else {
-		var verb = verbArray [appPrefs.ixcursor];
-		viewDocserverPage (verb);
-		}
-	
-	viewIndexOutline ();
+	xmlExpandIncludes (adrbody, function () { //4/3/21 by DW
+		var theOutline = outlineToJson (adrbody);
+		docserverOutline = theOutline; //set global
+		
+		var adrhead = getXstuctHead (xstruct);
+		urlUpdateSocket = xmlGetValue (adrhead, "urlUpdateSocket"); //set global
+		
+		verbArray = getVerbArray (); //set global
+		
+		if (pathparam !== undefined) {
+			viewPageViaPath (pathparam);
+			}
+		else {
+			viewPageViaPath (appPrefs.lastVerbViewed);
+			}
+		viewIndexOutline ();
+		
+		buildVerbsMenu (docserverOutline, "idMainMenu"); //4/8/21 by DW
+		});
 	}
 function startup () {
 	console.log ("startup");
