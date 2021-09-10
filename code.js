@@ -1,11 +1,12 @@
-var myVersion = "0.4.2", myProductName = "DocServer";
+var myVersion = "0.4.3", myProductName = "DocServer";
 
-const urlDocsOpml = "http://docs.littleoutliner.com/davewiner/verbDocs.opml?format=opml";
+var urlDocsOpml = "http://drummer.scripting.com/davewiner/verbDocs.opml";
 var docserverOpmltext = undefined;
 var docserverOutline = undefined;
 var urlUpdateSocket = undefined;
 var socketForChanges = undefined;
 var verbArray = undefined;
+var randomMysteryString; //7/7/21 by DW
 
 var appPrefs = {
 	lastVerbViewed: "file.exists",
@@ -13,7 +14,6 @@ var appPrefs = {
 	catcursor: 0 //index into categories -- docserverOutline.subs
 	}
 var flPrefsChanged = false;
-
 
 function xmlReadFile (url) { //a synchronous file read
 	var urlReadFileApi = "http://httpproxy.scripting.com/httpReadUrl"; 
@@ -47,6 +47,11 @@ function findInVerbArray (verbName) {
 		}
 	return (undefined);
 	}
+function redirectToDocserverPage (verbname) { //8/9/21 by DW
+	var url = stringNthField (stringNthField (window.location.href, "?", 1), "#", 1);
+	url += "?verb=" + verbname;
+	window.open (url);
+	}
 function buildVerbsMenu (theOutline, idMenuToInsertAfter) {
 	var theMenu = $("#idVerbsMenuList");
 	theMenu.empty ();
@@ -62,7 +67,7 @@ function buildVerbsMenu (theOutline, idMenuToInsertAfter) {
 			menuItemNameLink.click (function (event) { 
 				event.preventDefault ();
 				console.log ("You chose this verb from the menu: " + item.text);
-				viewDocserverPage (findInVerbArray (item.text)); //xxx
+				redirectToDocserverPage (item.text); //8/9/21 by DW
 				});
 			liMenuItem.append (menuItemNameLink);
 			ulSubMenu.append (liMenuItem);
@@ -86,8 +91,7 @@ function loadPrefs () {
 		}
 	}
 function shareCommand () {
-	var url = stringNthField (stringNthField (window.location.href, "?", 1), "#", 1);
-	alertDialog (url + "?verb=" + verbArray [appPrefs.ixcursor].path);
+	redirectToDocserverPage (verbArray [appPrefs.ixcursor].path);
 	}
 function readOpmlFile (urlOutline, callback) {
 	readHttpFileThruProxy (urlOutline, undefined, function (opmltext) {
@@ -120,7 +124,7 @@ function wsWatchForChange () { //requests notification of changes to docserver o
 						s = stringDelete (s, s.length, 1)
 						}
 					
-					console.log ("wsWatchForChange: update received, s.length == " + s.length);
+					console.log ("wsWatchForChange, " + new Date ().toLocaleTimeString () + ": update received, s.length == " + s.length);
 					
 					readOpmlFile (urlDocsOpml, function (err, opmltext) {
 						if (err) {
@@ -288,6 +292,8 @@ function viewDocserverPage (verb) {
 	$("#idDocserverPanel").empty ();
 	$("#idDocserverPanel").append (theDocserverPage);
 	
+	$("#idPageTitle").text (myProductName + ": " + verb.path); //7/27/21 by DW
+	
 	appPrefs.lastVerbViewed = verb.path;
 	prefsChanged ();
 	}
@@ -296,7 +302,7 @@ function viewPageViaPath (path) {
 		if (err) {
 			viewDocserverPage (verbArray [0]);
 			appPrefs.ixcursor = 0;
-			alertDialog (err.message);
+			console.log (err.message);
 			}
 		else {
 			viewDocserverPage (verb);
@@ -334,6 +340,12 @@ function everySecond () {
 		flPrefsChanged = false;
 		localStorage.docserverPrefs = jsontext;
 		}
+	//if another copy of DocServer launched, we are not needed, we quit -- 7/7/21 by DW
+		if (localStorage.docserverMysteryString !== undefined) {
+			if (localStorage.docserverMysteryString != randomMysteryString) {
+				window.location.href = "http://scripting.com/";
+				}
+			}
 	}
 function rebootDocserver (opmltext, pathparam) {
 	docserverOpmltext = opmltext; //set global
@@ -361,6 +373,9 @@ function rebootDocserver (opmltext, pathparam) {
 	}
 function startup () {
 	console.log ("startup");
+	//tell other copies of DocServer to quit -- 7/7/21 by DW
+		randomMysteryString = getRandomPassword (25);
+		localStorage.docserverMysteryString = randomMysteryString; 
 	loadPrefs ();
 	$("#idVersionNumber").text (myProductName + " v" + myVersion);
 	function finishStartup () {
@@ -376,6 +391,12 @@ function startup () {
 			whenLastUserEvent = new Date ();
 			});
 		}
+	
+	var urlparam = getURLParameter ("url"); //7/27/21 by DW
+	if (urlparam != "null") {
+		urlDocsOpml = urlparam;
+		}
+	
 	readOpmlFile (urlDocsOpml, function (err, opmltext) {
 		if (err) {
 			alertDialog (err.message);
