@@ -4,7 +4,7 @@ The source release of the DocServer web app, a Node app that generates Markdown 
 
 ### Links to various stuff
 
-1. The <a href="http://docserver.scripting.com/">deployed version</a> of the web app.
+1. The <a href="http://docserver.scripting.com/?verb=file.writeWholeFile">deployed version</a> of the web app.
 
 4. The <a href="https://github.com/scripting/docServer/tree/main/webapp">source</a> for the web app. 
 
