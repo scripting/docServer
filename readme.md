@@ -1,14 +1,6 @@
 # DocServer
 
-The source release of the DocServer web app, and a Node app that generates Markdown pages for the verb apps.
-
-### This is an OPML application
-
-If you have an outliner that can emit OPML, you can create and maintain a set of man-pages in Markdown, as I am doing with Drummer and the docs for the built-in verbs that come with its scripting language. 
-
-You can also browse the same outline in a web app with a GUI-style interface., 
-
-Each approach has its advantages. 
+The source release of the DocServer web app, a Node app that generates Markdown pages for the verb apps, and the Markdown pages the app generates.
 
 ### Links to various stuff
 
@@ -21,4 +13,14 @@ Each approach has its advantages.
 4. The <a href="https://github.com/scripting/docServer/tree/main/webapp">souce</a> for the web app. 
 
 5. Questions, comments? Post an item in this <a href="https://github.com/scripting/drummerSupport/issues/148">thread</a>. 
+
+### This is an OPML application
+
+If you have an outliner that can emit <a href="http://opml.org/">OPML</a>, you can create and maintain a set of man-pages in Markdown, as I am doing with <a href="http://drummer.scripting.com/">Drummer</a> and the docs for the built-in verbs in its scripting language. 
+
+You can also browse the same outline in a <a href="http://docserver.scripting.com/">web app</a> with a GUI-style interface., 
+
+Each approach has its advantages. :smile:
+
+Dave Winer, January 2022
 
