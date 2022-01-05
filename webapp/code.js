@@ -1,4 +1,4 @@
-var myVersion = "0.4.3", myProductName = "DocServer";
+var myVersion = "0.4.3", myProductName = "DocServer"; 
 
 var urlDocsOpml = "http://drummer.scripting.com/davewiner/verbDocs.opml";
 var docserverOpmltext = undefined;
@@ -296,6 +296,7 @@ function viewDocserverPage (verb) {
 	
 	appPrefs.lastVerbViewed = verb.path;
 	prefsChanged ();
+	hitCounter (); //11/28/21 by DW
 	}
 function viewPageViaPath (path) {
 	findPageInOutline (docserverOutline, path, function (err, verb) {
@@ -347,7 +348,7 @@ function everySecond () {
 				}
 			}
 	}
-function rebootDocserver (opmltext, pathparam) {
+function rebootDocserver (opmltext, pathparam, formatparam) {
 	docserverOpmltext = opmltext; //set global
 	var xstruct = xmlCompile (opmltext);
 	var adrbody = getXstuctBody (xstruct);
@@ -396,6 +397,7 @@ function startup () {
 	if (urlparam != "null") {
 		urlDocsOpml = urlparam;
 		}
+	
 	
 	readOpmlFile (urlDocsOpml, function (err, opmltext) {
 		if (err) {
