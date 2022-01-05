@@ -9,13 +9,18 @@ const opml = require ("opml");
 const davegithub = require ("davegithub"); 
 
 var config = {
+	flUploadToGithub: false,
+	flGenerateLocalFiles: true,
+	
+	localFolder: "", //set in config.json
+	
 	username: "scripting",
-	repo: "tmp",
-	repoPath: "docserver/verbs/",
+	repo: "docServer",
+	repoPath: "docspages/",
 	
 	githubPassword: "",
 	
-	baseRepoUrl: "https://github.com/scripting/tmp/blob/main/docserver/verbs/",
+	baseRepoUrl: "https://github.com/scripting/docServer/blob/main/docspages/",
 	
 	"committer": {
 		"name": "Dave Winer",
@@ -43,26 +48,52 @@ function httpRequest (url, callback) {
 		});
 	}
 function uploadToGithub (relpath, data, type, callback) {
-	const options = {
-		username: config.username,
-		repo: config.repo,
-		repoPath: config.repoPath + relpath,
-		password: config.githubPassword,
-		data: data,
-		type: (type === undefined) ? "text/plain" : type,
-		committer: config.committer,
-		message: config.message,
-		userAgent: config.userAgent
-		};
-	davegithub.uploadFile (options, function (err, response, body) {
-		console.log ("uploadToGithub: url == " + config.baseRepoUrl + relpath + ", status == " + response.statusCode); //xxx
-		if (err) {
-			console.log ("uploadToGithub: err.message == " + err.message);
-			}
+	if (config.flUploadToGithub) {
+		const options = {
+			username: config.username,
+			repo: config.repo,
+			repoPath: config.repoPath + relpath,
+			password: config.githubPassword,
+			data: data,
+			type: (type === undefined) ? "text/plain" : type,
+			committer: config.committer,
+			message: config.message,
+			userAgent: config.userAgent
+			};
+		davegithub.uploadFile (options, function (err, response, body) {
+			console.log ("uploadToGithub: url == " + config.baseRepoUrl + relpath + ", status == " + response.statusCode); //xxx
+			if (err) {
+				console.log ("uploadToGithub: err.message == " + err.message);
+				}
+			if (callback !== undefined) {
+				callback ();
+				}
+			});
+		}
+	else {
+		callback ();
+		}
+	}
+function writeLocalFile (relpath, data, callback) {
+	if (config.flGenerateLocalFiles) {
+		var f = config.localFolder + relpath;
+		utils.sureFilePath (f, function () {
+			fs.writeFile (f, data, function (err) {
+				console.log ("writeToLocalFile: f == " + f); 
+				if (err) {
+					console.log ("writeToLocalFile: err.message == " + err.message);
+					}
+				if (callback !== undefined) {
+					callback ();
+					}
+				});
+			});
+		}
+	else {
 		if (callback !== undefined) {
 			callback ();
 			}
-		});
+		}
 	}
 function getCategoryFilename (theCategory) {
 	return (utils.stringNthField (theCategory.text, " ", 1) + ".md");
@@ -129,7 +160,9 @@ function uploadOneCategory (theCategory, callback) {
 			
 			var path = getCategoryFilename (theCategory);
 			uploadToGithub (path, mdtext, undefined, function () {
-				callback ();
+				writeLocalFile (path, mdtext, function () {
+					callback ();
+					});
 				});
 			}
 		});
@@ -165,8 +198,12 @@ function uploadIndex (theOutline, callback) {
 				}
 			}
 		}
-	uploadToGithub ("readme.md", mdtext, undefined, function () {
-		callback ();
+	
+	var path = "readme.md";
+	uploadToGithub (path, mdtext, undefined, function () {
+		writeLocalFile (path, mdtext, function () {
+			callback ();
+			});
 		});
 	}
 function readConfig (f, theConfig, callback) { 
@@ -208,5 +245,3 @@ readConfig ("config.json", config, function () {
 			}
 		})
 	});
-
-
