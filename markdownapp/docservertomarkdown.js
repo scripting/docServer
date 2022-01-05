@@ -16,11 +16,11 @@ var config = {
 	
 	username: "scripting",
 	repo: "docServer",
-	repoPath: "docspages/",
+	repoPath: "docs/",
 	
 	githubPassword: "",
 	
-	baseRepoUrl: "https://github.com/scripting/docServer/blob/main/docspages/",
+	baseRepoUrl: "https://github.com/scripting/docServer/blob/main/docs/",
 	
 	"committer": {
 		"name": "Dave Winer",
@@ -158,7 +158,7 @@ function uploadOneCategory (theCategory, callback) {
 					}
 				}
 			
-			var path = getCategoryFilename (theCategory);
+			var path = "pages/" + getCategoryFilename (theCategory);
 			uploadToGithub (path, mdtext, undefined, function () {
 				writeLocalFile (path, mdtext, function () {
 					callback ();
@@ -184,7 +184,7 @@ function uploadAllCategories (theOutline, callback) {
 function uploadIndex (theOutline, callback) {
 	var mdtext = "", indentlevel = 0;
 	function add (s) {
-		mdtext += utils.filledString ("    ", indentlevel) + "* " + s + "\n";
+		mdtext += utils.filledString ("    ", indentlevel) + s + "\n";
 		}
 	var theCats = theOutline.opml.body.subs;
 	add ("# Complete list of verbs");
@@ -193,8 +193,8 @@ function uploadIndex (theOutline, callback) {
 		if (cat.subs !== undefined) {
 			for (var j = 0; j < cat.subs.length; j++) {
 				var verb = cat.subs [j];
-				var url = getCategoryFilename (cat) + "#" + utils.stringLower (verb.name);
-				add ("[" + verb.text + "](" + url + ")");
+				var url = "pages/" + getCategoryFilename (cat) + "#" + utils.stringLower (verb.name);
+				add ("*  + [" + verb.text + "](" + url + ")");
 				}
 			}
 		}
