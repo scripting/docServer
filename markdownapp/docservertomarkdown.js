@@ -61,7 +61,7 @@ function uploadToGithub (relpath, data, type, callback) {
 			userAgent: config.userAgent
 			};
 		davegithub.uploadFile (options, function (err, response, body) {
-			console.log ("uploadToGithub: url == " + config.baseRepoUrl + relpath + ", status == " + response.statusCode); //xxx
+			console.log ("uploadToGithub: url == " + config.baseRepoUrl + relpath + ", status == " + response.statusCode); 
 			if (err) {
 				console.log ("uploadToGithub: err.message == " + err.message);
 				}
@@ -194,7 +194,7 @@ function uploadIndex (theOutline, callback) {
 			for (var j = 0; j < cat.subs.length; j++) {
 				var verb = cat.subs [j];
 				var url = "pages/" + getCategoryFilename (cat) + "#" + utils.stringLower (verb.name);
-				add ("*  + [" + verb.text + "](" + url + ")");
+				add ("* [" + verb.text + "](" + url + ")");
 				}
 			}
 		}
@@ -237,7 +237,7 @@ readConfig ("config.json", config, function () {
 				else {
 					uploadAllCategories (theOutline, function () {
 						uploadIndex (theOutline, function () {
-							console.log ("All categories uploaded.");
+							console.log (""); //skip line
 							});
 						})
 					}
