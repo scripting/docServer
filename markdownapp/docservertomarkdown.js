@@ -1,4 +1,4 @@
-const myVersion = "0.4.1", myProductName = "docservertomarkdown";
+const myVersion = "0.4.2", myProductName = "docservertomarkdown";
 
 var urlDocsOpml = "http://drummer.scripting.com/davewiner/verbDocs.opml";
 
@@ -188,23 +188,37 @@ function uploadIndex (theOutline, callback) {
 		}
 	var theCats = theOutline.opml.body.subs;
 	add ("# Complete list of verbs");
-	for (var i = 0; i < theCats.length; i++) {
-		var cat = theCats [i];
-		if (cat.subs !== undefined) {
-			for (var j = 0; j < cat.subs.length; j++) {
-				var verb = cat.subs [j];
-				var url = "pages/" + getCategoryFilename (cat) + "#" + utils.stringLower (verb.name);
-				add ("* [" + verb.text + "](" + url + ")");
-				}
+	
+	function doNext (ix) {
+		if (ix < theCats.length) {
+			var fname = getCategoryFilename (theCats [ix]);
+			opml.expandInclude (theCats [ix], function (err, cat) {
+				if (err) {
+					console.log ("uploadIndex: err.message == " + err.message);
+					}
+				else {
+					if (cat.subs !== undefined) {
+						for (var j = 0; j < cat.subs.length; j++) {
+							var verb = cat.subs [j];
+							var url = "pages/" + fname + "#" + utils.stringLower (verb.name);
+							add ("* [" + verb.text + "](" + url + ")");
+							}
+						}
+					}
+				doNext (ix + 1);
+				});
+			}
+		else {
+			var path = "readme.md";
+			uploadToGithub (path, mdtext, undefined, function () {
+				writeLocalFile (path, mdtext, function () {
+					callback ();
+					});
+				});
 			}
 		}
+	doNext (0);
 	
-	var path = "readme.md";
-	uploadToGithub (path, mdtext, undefined, function () {
-		writeLocalFile (path, mdtext, function () {
-			callback ();
-			});
-		});
 	}
 function readConfig (f, theConfig, callback) { 
 	fs.readFile (f, function (err, jsontext) {
