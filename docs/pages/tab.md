@@ -1,5 +1,54 @@
 
 # tab verbs
+## tab.getActiveTabStatus
+#### Syntax
+tab.getActiveTabStatus ()
+
+#### Params
+None.
+
+#### Returns
+A JavaScript object containing information about the file in the active tab. 
+
+#### Notes
+This is the actual internal information Drummer uses to keep track of the tab. 
+
+Here's a description of some of values that are returned in the object. 
+
+- *flActive -- will always be true.*
+
+- *name -- the title of the file.*
+
+- *fname -- the file name, in Electric Drummer, the full path to the file.*
+
+- *flInstantOutline -- true if it's an instant outline.*
+
+- *flReadOnly -- true for instant outlines, false for outlines you create. *
+
+- *flLocked -- applies to instant outlines. True if the outline is locked, which means updates won't be displayed until the user unlocks the file.*
+
+- *flPrivate -- true if the file is private. *
+
+- *serialnum -- a unique number assigned to this tab by Drummer.*
+
+#### Examples
+`tab.getActiveTabStatus ()`
+
+<pre>{
+    "flActive": true,
+    "name": "Scratchpad",
+    "fname": "scratchpad.opml",
+    "flReadOnly": false,
+    "flInstantOutline": false,
+    "serialnum": 3,
+    "flLocked": false,
+    "flPrivate": true
+    }
+</pre>
+`tab.getActiveTabStatus ().fname`
+
+- */Users/davewiner/docserver source/verbDocs.opml*
+
 ## tab.getPublicUrl
 #### Syntax
 tab.getPublicUrl () returns string

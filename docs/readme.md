@@ -151,6 +151,7 @@
 * [string.trimTrailing](pages/string.md#stringtrimtrailing)
 * [string.trimWhitespace](pages/string.md#stringtrimwhitespace)
 * [string.upper](pages/string.md#stringupper)
+* [tab.getActiveTabStatus](pages/tab.md#)
 * [tab.getPublicUrl](pages/tab.md#tabgetpublicurl)
 * [tab.openFile](pages/tab.md#tabopenfile)
 * [tab.openInstantOutline](pages/tab.md#tabopeninstantoutline)
