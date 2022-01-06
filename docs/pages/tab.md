@@ -48,6 +48,16 @@ serialnum -- a unique number assigned to this tab by Drummer.
 
 - */Users/davewiner/docserver source/verbDocs.opml*
 
+`file.getFileInfo (tab.getActiveTabStatus ().fname)`
+
+<pre>{
+    "size": 81644,
+    "whenAccessed": "2022-01-06T21:00:09.000Z",
+    "whenCreated": "2021-07-30T13:35:09.000Z",
+    "whenModified": "2022-01-06T21:19:05.000Z",
+    "flPrivate": true
+    }
+</pre>
 ## tab.getPublicUrl
 #### Syntax
 tab.getPublicUrl () returns string
