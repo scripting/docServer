@@ -1,6 +1,6 @@
-var myVersion = "0.4.3", myProductName = "DocServer"; 
+var myVersion = "0.4.4", myProductName = "DocServer"; 
 
-var urlDocsOpml = "http://drummer.scripting.com/davewiner/verbDocs.opml";
+var urlDocsOpml = "https://drummer.land/dave.winer@gmail.com/verbDocs.opml";
 var docserverOpmltext = undefined;
 var docserverOutline = undefined;
 var urlUpdateSocket = undefined;
@@ -16,7 +16,7 @@ var appPrefs = {
 var flPrefsChanged = false;
 
 function xmlReadFile (url) { //a synchronous file read
-	var urlReadFileApi = "http://httpproxy.scripting.com/httpReadUrl"; 
+	var urlReadFileApi = "https://httpproxy.scripting.com/httpReadUrl"; 
 	return ($.ajax ({ 
 		url: urlReadFileApi + "?url=" + encodeURIComponent (url) + "&type=" + encodeURIComponent ("text/plain"),
 		headers: {"Accept": "text/x-opml"},
@@ -94,7 +94,7 @@ function shareCommand () {
 	redirectToDocserverPage (verbArray [appPrefs.ixcursor].path);
 	}
 function readOpmlFile (urlOutline, callback) {
-	readHttpFileThruProxy (urlOutline, undefined, function (opmltext) {
+	readHttpFile (urlOutline, function (opmltext) {
 		if (opmltext === undefined) {
 			callback ({message: "Can't read the OPML file containing the docs."});
 			}
